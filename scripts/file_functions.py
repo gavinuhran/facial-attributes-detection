@@ -31,3 +31,12 @@ def display_images(titles, images):
         action = cv2.waitKey(1)
         if action & 0xFF == 27:
             break
+
+def scale_sample(sample):
+    '''Scales an sample to have a width of 640px'''
+
+    WIDTH = 640
+    scale_percent = int(WIDTH / sample.shape[1])
+    height = int(sample.shape[0] * scale_percent)
+    dim = (WIDTH, height)
+    return cv2.resize(sample, dim)

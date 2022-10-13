@@ -4,7 +4,8 @@ import cv2
 
 # Import functions
 from detect_face import detect_face
-from file_functions import get_samples, display_images
+from file_functions import get_samples, display_images, scale_sample
+from morphology import get_binary_sample
     
 
 def main():
@@ -27,9 +28,12 @@ def main():
         if (not is_face_detected): 
             continue
 
+        binary_sample = get_binary_sample(sample_gray)
+        binary_sample = scale_sample(binary_sample)
+
         # Display samples
-        titles = ["Sample", "Sample Grayscale", "Face Detection"]
-        images = [sample, sample_gray, face_detection]
+        titles = ["Sample", "Sample Grayscale", "Face Detection", "Binary Sample"]
+        images = [sample, sample_gray, face_detection, binary_sample]
         display_images(titles, images)
 
 

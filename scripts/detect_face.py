@@ -32,14 +32,6 @@ def detect_face(sample, sample_gray):
 
     return True, face_detection
 
-
-    # # Scale the image to a width of 640px
-    # width = 640
-    # scale_percent = int(width / sample.shape[1])
-    # height = int(sample.shape[0] * scale_percent)
-    # dim = (width, height)
-    # sample_small = cv2.resize(sample_gray, dim)
-
     # # Binarize the image using Otsu's method
     # ret1, binary_sample = cv2.threshold(src=sample_gray, thresh=0, maxval=255, type=cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
