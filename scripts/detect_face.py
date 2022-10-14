@@ -1,7 +1,4 @@
 import cv2
-import numpy as np
-from skimage import measure
-import matplotlib.pyplot as plt
 import os
 
 def detect_face(sample, sample_gray):
