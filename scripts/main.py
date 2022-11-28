@@ -1,9 +1,10 @@
 # Import libraries
 import os
 import cv2
+import dlib
 
 # Import functions
-from detect_face import detect_face
+from feature_extraction import detect_face, detect_eyes, detect_mouth, is_positioning_weird
 from file_functions import get_samples, display_images, scale_sample
 from morphology import get_binary_sample, morph_open, morph_gradient, morph_erode
 from edge_detection import canny_edge_detection
@@ -16,6 +17,9 @@ def main():
     # Get dataset directory
     DATASET_DIR = os.path.abspath('face-dataset/faces')
 
+    # Initialize dlib predictor
+    DLIB_PREDICTOR = dlib.shape_predictor('models/shape_predictor_68_face_landmarks.dat')  
+
     # Loop over all images in dataset
     for filename in os.listdir(DATASET_DIR):
 
@@ -25,27 +29,50 @@ def main():
         # Get original and grayscale samples
         sample, sample_gray = get_samples(img_path)
 
-        # Detect faces
-        is_face_detected, face_detection = detect_face(sample, sample_gray)
+        # List of rectangles to be drawn, highlighting extracted features
+        feature_rectangles = []
 
-        # If no face is or multiple faces are detected, skip to next sample
+        # Detect faces
+        is_face_detected, face_rectangle = detect_face(sample, sample_gray)
+
+        # If no face is detected, skip to next sample
         if (not is_face_detected): 
             continue
+        else:
+            feature_rectangles.append(face_rectangle)
 
-        # Perform binarization on the sample
-        binary_sample = get_binary_sample(sample_gray)
+        # Detect eyes
+        are_eyes_detected, eye_rectangles = detect_eyes(sample, sample_gray)
 
-        # Perform canny edge detection
-        canny_edges = canny_edge_detection(sample)
+        # If no eyes are detected, skip to next sample
+        if (not are_eyes_detected):
+            continue
+        else:
+            feature_rectangles.extend(eye_rectangles)
 
-        # Perform morphological operations on canny edges
-        morph_sample = morph_open(canny_edges, kernel_size=8)
-        morph_sample = morph_erode(morph_sample, kernel_size=2, iterations=1)
+        # Detect mouth
+        is_mouth_detected, mouth_rectangle = detect_mouth(sample, sample_gray)
+
+        # If no mouth is detected, skip to next sample
+        if (not is_mouth_detected):
+            continue
+        else:
+            feature_rectangles.append(mouth_rectangle)
+
+        # Check that the positioning of the eyes and mouth all make sense
+        if (is_positioning_weird(feature_rectangles)):
+            continue
+
+        # Draw rectangles on sample
+        extracted_features = sample.copy()
+        for (x, y, w, h) in feature_rectangles:
+            cv2.rectangle(extracted_features, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         # Display samples
-        titles = ["Sample", "Sample Grayscale", "Face Detection", "Binary Sample", "Canny Edges", "Morphological Sample"]
-        images = [sample, sample_gray, face_detection, binary_sample, canny_edges, morph_sample]
-        display_images(titles, images)
+        # titles = ["Sample", "Sample Grayscale", "Face Detection", "Binary Sample", "Canny Edges", "Morphological Sample"]
+        # images = [sample, sample_gray, left_eye, binary_sample, canny_edges, morph_sample]
+        # display_images(titles, images)
+        display_images(['Features'], [extracted_features])
 
 
 if __name__ == '__main__':
