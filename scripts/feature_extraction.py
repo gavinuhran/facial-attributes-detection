@@ -16,11 +16,7 @@ def detect_face(sample, sample_gray):
     # Print if face is detected
     # print(f'[INFO] {len(faces)} face(s) detected')
 
-    # Skip images with no face or multiple faces
-    if (len(faces) != 1):
-        return False, None
-
-    return True, faces[0]
+    return faces
 
 def detect_eyes(sample, sample_gray):
 

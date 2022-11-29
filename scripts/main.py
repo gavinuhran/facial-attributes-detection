@@ -4,11 +4,10 @@ import cv2
 import dlib
 
 # Import functions
-from feature_extraction import detect_face, detect_eyes, detect_mouth, is_positioning_weird
-from file_functions import get_samples, display_images, scale_sample
-from morphology import get_binary_sample, morph_open, morph_gradient, morph_erode
-from edge_detection import canny_edge_detection
-    
+from feature_extraction import detect_face
+from file_functions import get_samples, scale_sample
+from dlib_extraction import get_dlib_landmarks, draw_landmarks, get_jawline_landmarks, get_right_eyebrow_landmarks, get_left_eyebrow_landmarks, get_nose_landmarks, get_right_eye_landmarks, get_left_eye_landmarks, get_lips_landmarks, get_teeth_landmarks
+
 
 def main():
     '''Loops over all images in dataset, passing them into functions that 
@@ -20,59 +19,45 @@ def main():
     # Initialize dlib predictor
     DLIB_PREDICTOR = dlib.shape_predictor('models/shape_predictor_68_face_landmarks.dat')  
 
+    run = True
+
     # Loop over all images in dataset
     for filename in os.listdir(DATASET_DIR):
+
+        if (not run):
+            cv2.destroyAllWindows()
+            break
 
         # Get image path
         img_path = os.path.join(DATASET_DIR, filename)
 
         # Get original and grayscale samples
         sample, sample_gray = get_samples(img_path)
+        sample = scale_sample(sample)
+        sample_gray = scale_sample(sample_gray)
 
         # List of rectangles to be drawn, highlighting extracted features
         feature_rectangles = []
 
         # Detect faces
-        is_face_detected, face_rectangle = detect_face(sample, sample_gray)
+        faces = detect_face(sample, sample_gray)
 
         # If no face is detected, skip to next sample
-        if (not is_face_detected): 
-            continue
-        else:
-            feature_rectangles.append(face_rectangle)
-
-        # Detect eyes
-        are_eyes_detected, eye_rectangles = detect_eyes(sample, sample_gray)
-
-        # If no eyes are detected, skip to next sample
-        if (not are_eyes_detected):
-            continue
-        else:
-            feature_rectangles.extend(eye_rectangles)
-
-        # Detect mouth
-        is_mouth_detected, mouth_rectangle = detect_mouth(sample, sample_gray)
-
-        # If no mouth is detected, skip to next sample
-        if (not is_mouth_detected):
-            continue
-        else:
-            feature_rectangles.append(mouth_rectangle)
-
-        # Check that the positioning of the eyes and mouth all make sense
-        if (is_positioning_weird(feature_rectangles)):
+        if (not len(faces)): 
             continue
 
-        # Draw rectangles on sample
-        extracted_features = sample.copy()
-        for (x, y, w, h) in feature_rectangles:
-            cv2.rectangle(extracted_features, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # Get dlib landmarks and draw them on sample
+        for face in faces:
+            landmarks = get_dlib_landmarks(sample, face, DLIB_PREDICTOR)
+            draw_landmarks(sample, landmarks, enumerated=True)
 
-        # Display samples
-        # titles = ["Sample", "Sample Grayscale", "Face Detection", "Binary Sample", "Canny Edges", "Morphological Sample"]
-        # images = [sample, sample_gray, left_eye, binary_sample, canny_edges, morph_sample]
-        # display_images(titles, images)
-        display_images(['Features'], [extracted_features])
+        # Display sample
+        cv2.imshow("Landmarks found", sample)  
+        key = cv2.waitKey(0)  
+        if key == 27:
+            run = False
+            break
+                
 
 
 if __name__ == '__main__':
