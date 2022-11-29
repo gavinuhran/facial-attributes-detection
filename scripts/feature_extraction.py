@@ -92,3 +92,23 @@ def is_positioning_weird(feature_rectangles):
         return True
 
     return False
+
+def extract_mustache_region(landmarks):
+    
+    x1 = landmarks[48][0,0]
+    y1 = landmarks[33][0,1]
+    x2 = landmarks[54][0,0]
+    y2 = landmarks[52][0,1]
+
+    # ([x1,y1], [x2,y2]) format
+    return ((x1, y1), (x2, y2))
+
+def extract_eyebrow_region(landmarks):
+
+    x1 = landmarks[17][0,0]
+    y1 = min(landmarks[17:22], key=lambda x: x[0,1])[0,1]
+    x2 = landmarks[21][0,0]
+    y2 = max(landmarks[17:22], key=lambda x: x[0,1])[0,1]
+
+    # ([x1,y1], [x2,y2]) format
+    return ((x1, y1), (x2, y2))

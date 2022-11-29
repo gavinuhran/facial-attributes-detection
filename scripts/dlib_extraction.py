@@ -5,10 +5,7 @@ import cv2
 def get_dlib_landmarks(sample, face, predictor):
     '''Perform dlib detection that returns 68 landmarks on an identified face'''
 
-    x = face[0]
-    y = face[1]
-    w = face[2]
-    h = face[3]
+    (x, y, w, h) = face
 
     dlib_rect = dlib.rectangle(int(x), int(y), int(x + w), int(y + h))  
 
