@@ -35,8 +35,7 @@ def display_images(titles, images):
 def scale_sample(sample):
     '''Scales an sample to have a width of 640px'''
 
-    WIDTH = 640
-    scale_percent = int(WIDTH / sample.shape[1])
-    height = int(sample.shape[0] * scale_percent)
-    dim = (WIDTH, height)
+    WIDTH = 480
+    HEIGHT = 640
+    dim = (WIDTH, HEIGHT)
     return cv2.resize(sample, dim)
