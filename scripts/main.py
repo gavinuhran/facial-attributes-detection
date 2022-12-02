@@ -194,13 +194,13 @@ def main():
                 
 
             # Display sample
-            cv2.putText(
-                sample, filename, (5, 25), fontFace=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, fontScale=0.8, color=(0, 255, 0))
-            cv2.imshow("Landmarks found", sample)
-            key = cv2.waitKey(0)
-            if key == 27:
-                run = False
-                break
+            # cv2.putText(
+            #     sample, filename, (5, 25), fontFace=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, fontScale=0.8, color=(0, 255, 0))
+            # cv2.imshow("Landmarks found", sample)
+            # key = cv2.waitKey(0)
+            # if key == 27:
+            #     run = False
+            #     break
 
     '''PRINT OUT DETAILED STATISTICS ON THE CLASSIFIERS' PERFORMANCES'''
     print('-------------------------------------------------------------')
