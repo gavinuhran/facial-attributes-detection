@@ -10,7 +10,7 @@ Once Anaconda is installed, let’s create a “sandbox” (a.k.a. “conda envi
 and activate it
 
     conda activate fad
-then install OpenCV and Sci-kit
+then install required packages
 
     conda install -c conda-forge opencv
     conda install scikit-image
