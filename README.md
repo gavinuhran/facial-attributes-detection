@@ -14,6 +14,9 @@ then install OpenCV and Sci-kit
 
     conda install -c conda-forge opencv
     conda install scikit-image
+    conda install -c conda-forge dlib
+    conda install -c conda-forge tensorflow
+    conda install -c conda-forge scikit-learn
 
 ## 3. Download and run script
 
